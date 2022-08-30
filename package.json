@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "search-attribute",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -10,15 +10,11 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^1.1.4",
-    "axios": "^0.26.1",
     "element-plus": "^2.1.9",
     "less": "^4.1.2",
-    "qs": "^6.10.3",
     "unplugin-auto-import": "^0.7.1",
     "unplugin-vue-components": "^0.19.2",
-    "vue": "^3.2.25",
-    "vue-router": "^4.0.14",
-    "vuex": "^4.0.2"
+    "vue": "^3.2.25"
   },
   "devDependencies": {
     "@types/node": "^17.0.24",

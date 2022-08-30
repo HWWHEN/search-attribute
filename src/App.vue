@@ -508,18 +508,20 @@ onMounted(() => {
       <el-col :span="12" :xs="24">
         <el-card class="box-card">
           <div class="tabletitle">选中词条</div>
-          <el-table v-loading="state.loading" :data="state.selectList">
-            <el-table-column label="词条描述" align="center" prop="name" />
-            <el-table-column label="buff量" align="center" prop="value" width="80" />
-            <el-table-column label="备注" align="center" prop="note" />
-            <el-table-column label="操作" align="center" width="250">
-              <template #default="scope">
-                <el-button type="primary" plain @click="note(scope)">备注</el-button>
-                <el-button type="primary" plain @click="details(scope.row)">详情</el-button>
-                <el-button type="primary" plain @click="remove(scope)">移除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <el-scrollbar :height="`calc(100vh - 108px)`" always>
+            <el-table v-loading="state.loading" :data="state.selectList">
+              <el-table-column label="词条描述" align="center" prop="name" />
+              <el-table-column label="buff量" align="center" prop="value" width="80" />
+              <el-table-column label="备注" align="center" prop="note" />
+              <el-table-column label="操作" align="center" width="250">
+                <template #default="scope">
+                  <el-button type="primary" plain @click="note(scope)">备注</el-button>
+                  <el-button type="primary" plain @click="details(scope.row)">详情</el-button>
+                  <el-button type="primary" plain @click="remove(scope)">移除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-scrollbar>
         </el-card>
       </el-col>
     </el-row>
