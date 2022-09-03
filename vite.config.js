@@ -42,19 +42,25 @@ export default defineConfig(({ mode }) => {
       },
     },
     //*********************************跨域配置
-    server: {
-      open: true,
-      proxy: {
-        "/api": {
-          target: loadEnv(mode, process.cwd()).VITE_PATH, //代理地址
-          changeOrigin: true, //接口跨域
-          //ws: true, // proxy websockets
-          rewrite: (path) => path.replace(/^\/api/, ""),
-        }
-      },
-    },
+    // server: {
+    //   open: true,
+    //   proxy: {
+    //     "/api": {
+    //       target: loadEnv(mode, process.cwd()).VITE_PATH, //代理地址
+    //       changeOrigin: true, //接口跨域
+    //       //ws: true, // proxy websockets
+    //       rewrite: (path) => path.replace(/^\/api/, ""),
+    //     },
+    //   },
+    // },
     //***********************************打包配置
-    base: '/',
+    base: "./",
+    publicPath: "./",
+    history: {
+      type: "hash",
+    },
+    
+    // publicDir: "./",
     build: {
       // 清除console和debugger
       // minify: "terser",
@@ -67,9 +73,9 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           //对静态文件进行文件分类
-          chunkFileNames: "assets/js/[name]-[hash].js",
-          entryFileNames: "assets/js/[name]-[hash].js",
-          assetFileNames: "assets/[ext]/[name]-[hash].[ext]",
+          chunkFileNames: "js/[name]-[hash].js",
+          entryFileNames: "js/[name]-[hash].js",
+          assetFileNames: "[ext]/[name]-[hash].[ext]",
         },
         manualChunks(id) {
           //静态资源分拆打包

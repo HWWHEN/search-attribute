@@ -429,7 +429,20 @@ const state = reactive({
     note: "",
   },
   details: {},
+  show: "all",
 });
+
+const debounce = (fun, delay) => {
+  let t = "";
+  return (args) => {
+    let that = this;
+    let _args = args;
+    clearTimeout(t);
+    t = setTimeout(function () {
+      fun.call(that, _args);
+    }, delay);
+  };
+};
 
 function select(row) {
   state.selectList.push(row);
@@ -459,7 +472,7 @@ function submitForm() {
   state.dialog.visible = false;
 }
 
-function search() {
+function searchFun() {
   state.queryParams.keyworkList = []; //清空关键词数组
   state.quertList = []; //清空筛选数组
   state.queryParams.keywork.split(" ").forEach((el) => {
@@ -476,6 +489,10 @@ function search() {
   });
 }
 
+const search = debounce(() => {
+  searchFun();
+}, 300);
+
 /**
  * 初始化数据
  */
@@ -486,73 +503,53 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
-      <!-- 用户数据 -->
-      <el-col :span="12" :xs="24">
-        <el-card class="box-card">
-          <div class="tabletitle">词条池</div>
-          <el-input v-model="state.queryParams.keywork" placeholder="关键词搜索(空格隔开)" @input="search" class="input" />
-          <el-scrollbar :height="`calc(100vh - 140px)`" always>
-            <el-table v-loading="state.loading" :data="state.quertList.length == 0 ? state.entrieList : state.quertList">
-              <el-table-column label="词条描述" align="center" prop="name" />
-              <el-table-column label="buff量" align="center" prop="value" width="80" />
-              <el-table-column label="操作" align="center" width="150">
-                <template #default="scope">
-                  <el-button type="primary" plain @click="select(scope.row)">选中</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-scrollbar>
-        </el-card>
-      </el-col>
-      <el-col :span="12" :xs="24">
-        <el-card class="box-card">
-          <div class="tabletitle">选中词条</div>
-          <el-scrollbar :height="`calc(100vh - 108px)`" always>
-            <el-table v-loading="state.loading" :data="state.selectList">
-              <el-table-column label="词条描述" align="center" prop="name" />
-              <el-table-column label="buff量" align="center" prop="value" width="80" />
-              <el-table-column label="备注" align="center" prop="note" />
-              <el-table-column label="操作" align="center" width="250">
-                <template #default="scope">
-                  <el-button type="primary" plain @click="note(scope)">备注</el-button>
-                  <el-button type="primary" plain @click="details(scope.row)">详情</el-button>
-                  <el-button type="primary" plain @click="remove(scope)">移除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-scrollbar>
-        </el-card>
-      </el-col>
-    </el-row>
-    <!-- 用户表单 -->
-    <el-dialog :title="state.dialog.title" v-model="state.dialog.visible" width="600px" append-to-body>
-      <el-input v-model="state.formData.note" placeholder="请输入备注" />
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="state.dialog.visible = false">取 消</el-button>
-        </div>
-      </template>
-    </el-dialog>
-    <!-- 详情 -->
-    <el-dialog :title="state.detailsdialog.title" v-model="state.detailsdialog.visible" append-to-body>
-      <div>
-        <pre><code>{{ JSON.stringify(state.details, null, 4).replace(/\"/g, "")}}</code></pre>
-      </div>
-    </el-dialog>
+    <!-- 用户数据 -->
+    <!-- <el-card class="box-card"> -->
+    <div class="btns">
+      <el-button :type="state.show == 'all' ? 'primary' : 'info'" plain @click="state.show = 'all'">全部词条</el-button>
+      <el-button :type="state.show == 'select' ? 'primary' : 'info'" plain @click="state.show = 'select'">选中词条({{ state.selectList.length }})</el-button>
+    </div>
+    <div v-show="state.show == 'all'">
+      <el-input v-model="state.queryParams.keywork" placeholder="关键词搜索(空格隔开)" @input="search" class="input" />
+      <el-scrollbar always>
+        <el-table v-loading="state.loading" :data="state.quertList.length == 0 ? state.entrieList : state.quertList" height="calc(100vh - 100px)">
+          <el-table-column label="词条描述" align="center" prop="name" />
+          <el-table-column label="buff" align="center" prop="value" width="60" />
+          <el-table-column label="操作" align="center" width="85">
+            <template #default="scope">
+              <el-button type="primary" plain @click="select(scope.row)">选中</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-scrollbar>
+    </div>
+    <div v-show="state.show == 'select'">
+      <el-scrollbar always>
+        <el-table v-loading="state.loading" :data="state.selectList" height="calc(100vh - 70px)">
+          <el-table-column label="词条描述" align="center" prop="name" />
+          <el-table-column label="buff" align="center" prop="value" width="60" />
+          <el-table-column label="操作" align="center" width="85">
+            <template #default="scope">
+              <el-button type="primary" plain @click="remove(scope)">移除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-scrollbar>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.btns {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+.btns .el-button {
+  padding: 18px 25px;
+}
 .el-row {
   margin: 0 !important;
-}
-.tabletitle {
-  font-size: 22px;
-  color: #636363;
-  text-align: center;
-  margin-bottom: 10px;
 }
 .el-input {
   width: 100%;
