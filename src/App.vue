@@ -506,8 +506,10 @@ onMounted(() => {
     <!-- 用户数据 -->
     <!-- <el-card class="box-card"> -->
     <div class="btns">
-      <el-button :type="state.show == 'all' ? 'primary' : 'info'" plain @click="state.show = 'all'">全部词条</el-button>
-      <el-button :type="state.show == 'select' ? 'primary' : 'info'" plain @click="state.show = 'select'">选中词条({{ state.selectList.length }})</el-button>
+      <el-button :type="state.show == 'all' ? 'primary' : 'info'" plain @click="state.show = 'all'" class="touch-action">全部词条</el-button>
+      <el-button :type="state.show == 'select' ? 'primary' : 'info'" plain @click="state.show = 'select'" class="touch-action"
+        >选中词条({{ state.selectList.length }})</el-button
+      >
     </div>
     <div v-show="state.show == 'all'">
       <el-input v-model="state.queryParams.keywork" placeholder="关键词搜索(空格隔开)" @input="search" class="input" />
@@ -517,7 +519,7 @@ onMounted(() => {
           <el-table-column label="buff" align="center" prop="value" width="60" />
           <el-table-column label="操作" align="center" width="85">
             <template #default="scope">
-              <el-button type="primary" plain @click="select(scope.row)">选中</el-button>
+              <el-button type="primary" plain @click="select(scope.row)" class="touch-action">选中</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -530,7 +532,7 @@ onMounted(() => {
           <el-table-column label="buff" align="center" prop="value" width="60" />
           <el-table-column label="操作" align="center" width="85">
             <template #default="scope">
-              <el-button type="primary" plain @click="remove(scope)">移除</el-button>
+              <el-button type="primary" plain @click="remove(scope)" class="touch-action">移除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -540,6 +542,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.touch-action {
+  touch-action: none !important;
+}
 .btns {
   display: flex;
   justify-content: center;
